@@ -2,6 +2,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+# Load model artifacts from src/ directory
 try:
     model = joblib.load("src/rf_model.pkl")
     scaler = joblib.load("src/scaler.pkl")
@@ -11,7 +12,7 @@ except Exception as e:
 
 def preprocess(features_dict: dict) -> np.ndarray:
     """
-    Convert input dict to scaled feature array
+    Convert input dictionary to scaled NumPy array.
     """
     df = pd.DataFrame([features_dict])
     df_selected = df[selected_features]
@@ -20,12 +21,12 @@ def preprocess(features_dict: dict) -> np.ndarray:
 
 def predict_url_class(features: np.ndarray) -> tuple[str, float]:
     """
-    Predict class and confidence score from scaled input features
+    Predict phishing or legitimate from scaled features.
+    Returns label and confidence score.
     """
     prediction = model.predict(features)[0]
     proba = model.predict_proba(features)[0]
     confidence = max(proba)
-
     label = "Phishing" if prediction == 1 else "Legitimate"
     return label, confidence
 
@@ -34,3 +35,6 @@ def get_selected_features():
 
 def get_scaler():
     return scaler
+
+def get_model():
+    return model
