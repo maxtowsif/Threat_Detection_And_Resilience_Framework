@@ -52,7 +52,7 @@ def predict_url_class(features: np.ndarray) -> tuple[int, float]:
     Returns:
         tuple: (predicted_label, confidence_score)
     """
-    probas = rf_model.predict_proba(features)[0]
+    probas = model.predict_proba(features)[0]
     pred = int(np.argmax(probas))
     conf = float(np.max(probas))
     return pred, conf
