@@ -1,58 +1,30 @@
-# model.py
-# ---------------------------------------------------------
-# 🧠 Model Prediction Module
-# Loads trained model + scaler + features and makes predictions
-# ---------------------------------------------------------
-
 import joblib
 import numpy as np
+import pandas as pd
 
-# File paths for model artefacts
-MODEL_PATH = "rf_model.pkl"
-SCALER_PATH = "scaler.pkl"
-FEATURE_LIST_PATH = "selected_features.pkl"
-
-# Load artefacts once at module level
 try:
     model = joblib.load("src/rf_model.pkl")
     scaler = joblib.load("src/scaler.pkl")
     selected_features = joblib.load("src/selected_features.pkl")
 except Exception as e:
-     raise RuntimeError(f"Failed to load model artefacts: {e}")
+    raise RuntimeError(f"Failed to load model artefacts: {e}")
 
-
-def get_selected_features():
+def preprocess(features_dict: dict) -> np.ndarray:
     """
-    Returns the list of selected feature names.
+    Convert input dict to scaled feature array
     """
-    return selected_features
+    df = pd.DataFrame([features_dict])
+    df_selected = df[selected_features]
+    df_scaled = scaler.transform(df_selected)
+    return df_scaled
 
-
-def get_scaler():
+def predict_url_class(features: np.ndarray) -> tuple[str, float]:
     """
-    Returns the fitted StandardScaler.
+    Predict class and confidence score from scaled input features
     """
-    return scaler
+    prediction = model.predict(features)[0]
+    proba = model.predict_proba(features)[0]
+    confidence = max(proba)
 
-
-def get_model():
-    """
-    Returns the trained RandomForest model.
-    """
-    return rf_model
-
-
-def predict_url_class(features: np.ndarray) -> tuple[int, float]:
-    """
-    Predicts the class of a URL based on its features.
-
-    Args:
-        features (np.ndarray): Scaled 1×n feature vector
-
-    Returns:
-        tuple: (predicted_label, confidence_score)
-    """
-    probas = model.predict_proba(features)[0]
-    pred = int(np.argmax(probas))
-    conf = float(np.max(probas))
-    return pred, conf
+    label = "Phishing" if prediction == 1 else "Legitimate"
+    return label, confidence
