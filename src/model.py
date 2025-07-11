@@ -5,7 +5,7 @@
 # ---------------------------------------------------------
 
 import joblib
-
+import numpy as np
 
 # File paths for model artefacts
 MODEL_PATH = "rf_model.pkl"
