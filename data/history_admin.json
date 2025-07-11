@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2025-07-10 23:55:41",
+    "url": "https://www.google.com/",
+    "prediction": "Legitimate",
+    "confidence": "100.00%"
+  },
+  {
+    "timestamp": "2025-07-10 23:56:27",
+    "url": "http://www.shadetreetechnology.com/V4/validation/ba4b8bddd7958ecb8772c836c2969531",
+    "prediction": "Phishing",
+    "confidence": "100.00%"
+  },
+  {
+    "timestamp": "2025-07-10 23:57:27",
+    "url": "https://www.researchgate.net",
+    "prediction": "Legitimate",
+    "confidence": "73.00%"
+  }
+]

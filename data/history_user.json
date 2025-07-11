@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2025-07-10 23:58:08",
+    "url": "http://amaz0n-login-userinfo.com",
+    "prediction": "Phishing",
+    "confidence": "84.32%"
+  },
+  {
+    "timestamp": "2025-07-10 23:58:39",
+    "url": "http://www.iracing.com/tracks/gateway-motorsports-park/",
+    "prediction": "Legitimate",
+    "confidence": "100.00%"
+  }
+]

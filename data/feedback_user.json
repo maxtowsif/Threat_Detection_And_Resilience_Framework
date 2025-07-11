@@ -1,0 +1,18 @@
+[
+  {
+    "timestamp": "2025-07-10 23:58:27",
+    "url": "http://amaz0n-login-userinfo.com",
+    "predicted_label": "Phishing",
+    "confidence": "84.32%",
+    "user_feedback": "\ud83d\udc4d Correct",
+    "user_comment": "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque cursus odio et velit euismod auctor. Vestibulum sed nibh ac nisl porta mattis."
+  },
+  {
+    "timestamp": "2025-07-10 23:58:48",
+    "url": "http://www.iracing.com/tracks/gateway-motorsports-park/",
+    "predicted_label": "Legitimate",
+    "confidence": "100.00%",
+    "user_feedback": "\ud83d\udc4e Incorrect",
+    "user_comment": "Vestibulum scelerisque, turpis at sagittis efficitur, libero nisl aliquam enim, eget eleifend ante sapien eu sem. Vivamus lacinia ante id nulla aliquam eleifend."
+  }
+]
