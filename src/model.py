@@ -5,7 +5,7 @@
 # ---------------------------------------------------------
 
 import joblib
-import numpy as np
+
 
 # File paths for model artefacts
 MODEL_PATH = "rf_model.pkl"
@@ -14,11 +14,11 @@ FEATURE_LIST_PATH = "selected_features.pkl"
 
 # Load artefacts once at module level
 try:
-    rf_model = joblib.load(MODEL_PATH)
-    scaler = joblib.load(SCALER_PATH)
-    selected_features = joblib.load(FEATURE_LIST_PATH)
+    model = joblib.load("src/rf_model.pkl")
+    scaler = joblib.load("src/scaler.pkl")
+    selected_features = joblib.load("src/selected_features.pkl")
 except Exception as e:
-    raise RuntimeError(f"Failed to load model artefacts: {e}")
+     raise RuntimeError(f"Failed to load model artefacts: {e}")
 
 
 def get_selected_features():
