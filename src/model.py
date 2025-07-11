@@ -28,3 +28,5 @@ def predict_url_class(features: np.ndarray) -> tuple[str, float]:
 
     label = "Phishing" if prediction == 1 else "Legitimate"
     return label, confidence
+def get_selected_features():
+    return selected_features
