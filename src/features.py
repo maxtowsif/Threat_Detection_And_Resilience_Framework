@@ -4,32 +4,26 @@ import re
 from urllib.parse import urlparse
 
 def extract_features(url):
-    """
-    Extract basic lexical features from a URL string.
-    Returns a dictionary of features for ML input.
-    """
     features = {}
 
     parsed = urlparse(url)
     hostname = parsed.hostname or ""
     path = parsed.path or ""
 
-    # Basic lexical features
-    features["url_length"] = len(url)
-    features["hostname_length"] = len(hostname)
-    features["path_length"] = len(path)
-    features["has_https"] = int(url.lower().startswith("https"))
-    features["count_dots"] = url.count(".")
-    features["count_hyphens"] = url.count("-")
-    features["count_digits"] = sum(c.isdigit() for c in url)
-    features["count_special_chars"] = len(re.findall(r"[^\w\s]", url))
+    # Match names exactly to what your model expects:
+    features["length_url"] = len(url)
+    features["length_hostname"] = len(hostname)
+    features["nb_dots"] = url.count(".")
+    features["nb_hyphens"] = url.count("-")
+    features["nb_at"] = url.count("@")
+    features["nb_qm"] = url.count("?")
+    features["nb_and"] = url.count("&")
+    features["nb_or"] = url.count("|")
+    features["nb_slash"] = url.count("/")
+    features["nb_www"] = int("www" in url.lower())
 
-    # IP address pattern
-    ip_pattern = re.compile(r"(\d{1,3}\.){3}\d{1,3}")
-    features["contains_ip"] = int(bool(ip_pattern.search(url)))
-
-    # Suspicious keywords
-    suspicious_words = ["login", "verify", "secure", "account", "update", "free", "confirm", "bank", "signin"]
-    features["has_suspicious_words"] = int(any(word in url.lower() for word in suspicious_words))
+    # Ratio of digits in URL
+    num_digits = sum(c.isdigit() for c in url)
+    features["ratio_digits_url"] = num_digits / len(url) if len(url) > 0 else 0.0
 
     return features
