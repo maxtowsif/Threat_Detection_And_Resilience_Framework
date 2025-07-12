@@ -36,6 +36,7 @@ def _load_persisted_session():
         st.session_state["user_email"] = None
 
 def logout():
+    """Log the user out and remove session file."""
     st.session_state["logged_in"] = False
     st.session_state["user_email"] = None
     if os.path.exists(SESSION_FILE):
@@ -46,14 +47,14 @@ def logout():
 # ---------------------------
 
 def load_users():
-    """Load existing users from credentials file."""
+    """Load users from credentials file."""
     if os.path.exists(CREDENTIAL_FILE):
         with open(CREDENTIAL_FILE, "r") as f:
             return json.load(f)
     return {}
 
 def save_users(users):
-    """Save updated user list."""
+    """Save updated users to file."""
     with open(CREDENTIAL_FILE, "w") as f:
         json.dump(users, f)
 
@@ -67,7 +68,7 @@ def create_user(email, password):
     return True
 
 def validate_login(email, password):
-    """Validate user credentials."""
+    """Check user credentials and start session."""
     users = load_users()
     if users.get(email) == password:
         _persist_session(email)
@@ -75,3 +76,13 @@ def validate_login(email, password):
         st.session_state["user_email"] = email
         return True
     return False
+
+# ---------------------------
+# Route Protection
+# ---------------------------
+
+def protect_route():
+    """Stop access to protected routes if not logged in."""
+    if not st.session_state.get("logged_in"):
+        st.warning("Please log in to access this page.")
+        st.stop()
