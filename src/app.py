@@ -1,8 +1,13 @@
 # app.py
 import streamlit as st
-import auth  # This works only if auth.py is in /src/ and no import loop
+import auth
+import model  # your AI model (rf_model, scaler, etc.)
+import features  # for feature extraction
+import json
+import os
+from datetime import datetime
 
-auth._load_persisted_session()  # ✅ Call session loader ONCE here only
+auth._load_persisted_session()
 
 st.set_page_config(page_title="Threat Detection", page_icon="🛡️")
 st.title("🛡️ Threat Detection & Resilience Framework")
@@ -40,13 +45,56 @@ with st.expander("🔑 Create New Account"):
             st.warning("Please enter both email and password.")
 
 # ----------------------------
-# PROTECTED CONTENT
+# MAIN SYSTEM — THREAT DETECTION (Protected)
 # ----------------------------
 if st.session_state.get("logged_in"):
+
     st.markdown("---")
     st.subheader("✅ Secure Dashboard")
-    st.success("You are logged in and can use the system.")
-    # 🧠 Your prediction/dashboard interface goes here
-    st.info("You can now access the threat detection system.")
+
+    url_input = st.text_input("Paste a website URL below:")
+    if st.button("Check Legitimacy"):
+        if url_input:
+            try:
+                extracted_features = features.extract_features(url_input)
+                scaled_features = model.preprocess(extracted_features)
+                label, confidence = model.predict_url_class(scaled_features)
+
+                st.success(f"✅ Prediction: {label}")
+                st.info(f"Model Confidence: {confidence * 100:.2f}%")
+
+                # Save to history
+                history_path = "data/history_user.json"
+                history = []
+                if os.path.exists(history_path):
+                    with open(history_path, "r") as f:
+                        history = json.load(f)
+
+                history.append({
+                    "timestamp": str(datetime.now()),
+                    "url": url_input,
+                    "prediction": label,
+                    "confidence": round(confidence * 100, 2)
+                })
+
+                with open(history_path, "w") as f:
+                    json.dump(history, f, indent=2)
+
+            except Exception as e:
+                st.error("Something went wrong during prediction.")
+                st.exception(e)
+        else:
+            st.warning("Please enter a URL.")
+
+    # Display prediction history
+    st.markdown("### 📜 Prediction History")
+    history_path = "data/history_user.json"
+    if os.path.exists(history_path):
+        with open(history_path, "r") as f:
+            history = json.load(f)
+        for entry in reversed(history[-5:]):
+            st.write(f"{entry['timestamp']} — [{entry['url']}] — **{entry['prediction']}** ({entry['confidence']}%)")
+    else:
+        st.info("No history yet.")
 else:
-    st.warning("Log in to access system features.")
+    st.warning("Log in to access the threat detection system.")
