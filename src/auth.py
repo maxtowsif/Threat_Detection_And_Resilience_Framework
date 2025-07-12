@@ -1,8 +1,10 @@
 import streamlit as st
-import auth  # Make sure auth.py is in /src and has no circular references
+import auth
 
-# Load session
-auth._load_persisted_session()
+auth._load_persisted_session()  # ✅ THIS GOES HERE
+
+# ... the rest of your login and registration system
+
 
 # ---------------------------------
 # LOGIN SYSTEM
