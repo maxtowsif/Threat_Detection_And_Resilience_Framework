@@ -7,7 +7,7 @@ import json
 import os
 from datetime import datetime
 
-# Initialize Streamlit session
+# ------------- SESSION INIT -------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "user_email" not in st.session_state:
@@ -15,9 +15,7 @@ if "user_email" not in st.session_state:
 
 auth._load_persisted_session()
 
-# -------------------------------------
-# PAGE ROUTING (Login vs Dashboard)
-# -------------------------------------
+# ------------- PAGE CONTROL -------------
 if not st.session_state.logged_in:
     # ----------------------------
     # LOGIN PAGE
@@ -31,7 +29,7 @@ if not st.session_state.logged_in:
     col1, col2 = st.columns([1, 2])
     if col1.button("Login"):
         if auth.validate_login(email, password):
-            st.experimental_rerun()
+            st.rerun()  # ✅ Fixed here
         else:
             st.error("Invalid email or password.")
 
@@ -46,7 +44,7 @@ if not st.session_state.logged_in:
         if st.button("Create Account"):
             if new_email and new_password:
                 if auth.create_user(new_email, new_password):
-                    st.success("Account created successfully. You can now log in.")
+                    st.success("Account created. Please log in.")
                 else:
                     st.warning("User already exists.")
             else:
@@ -60,10 +58,14 @@ else:
     st.title("🛡️ Threat Detection & Resilience Dashboard")
     st.success(f"Logged in as {st.session_state.user_email}")
 
-    st.button("Logout", on_click=auth.logout)
+    if st.button("Logout"):
+        auth.logout()
+        st.rerun()
 
     # ---- Threat Detection
-    url_input = st.text_input("Paste a website URL below:")
+    st.markdown("### 🌐 Paste a website URL to check:")
+    url_input = st.text_input("Website URL")
+
     if st.button("Check Legitimacy"):
         if url_input:
             try:
@@ -92,12 +94,12 @@ else:
                     json.dump(history, f, indent=2)
 
             except Exception as e:
-                st.error("Prediction error:")
+                st.error("Prediction failed.")
                 st.exception(e)
         else:
             st.warning("Please enter a URL.")
 
-    # ---- History Viewer
+    # ---- History
     st.markdown("### 📜 Prediction History")
     history_path = "data/history_user.json"
     if os.path.exists(history_path):
@@ -106,4 +108,4 @@ else:
         for entry in reversed(history[-5:]):
             st.write(f"{entry['timestamp']} — [{entry['url']}] — **{entry['prediction']}** ({entry['confidence']}%)")
     else:
-        st.info("No predictions yet.")
+        st.info("No prediction history yet.")
