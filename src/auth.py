@@ -1,35 +1,31 @@
 import streamlit as st
-import auth  # make sure this is in the same folder or adjust import path
+import auth  # your auth.py must be in the same folder or adjust path
 
-# Load session if available
+# Load previous session (if any)
 auth._load_persisted_session()
 
-st.title("🔐 Login to Threat Detection System")
+# ----------------------------
+# LOGIN SECTION
+# ----------------------------
+st.title("🔐 User Login")
 
-# -----------------------
-# LOGIN FORM
-# -----------------------
 email = st.text_input("Email")
 password = st.text_input("Password", type="password")
 
-col1, col2 = st.columns([1, 3])
-login_btn = col1.button("Login")
-logout_btn = col2.button("Logout")
-
-if login_btn:
+if st.button("Login"):
     if auth.validate_login(email, password):
-        st.success(f"Welcome, {email}")
+        st.success(f"Welcome, {email}!")
     else:
         st.error("Invalid credentials.")
 
-if logout_btn:
+if st.button("Logout"):
     auth.logout()
     st.info("You have been logged out.")
 
-# -----------------------
-# REGISTER NEW ACCOUNT
-# -----------------------
-with st.expander("Create a new account"):
+# ----------------------------
+# REGISTRATION SECTION
+# ----------------------------
+with st.expander("Create New Account"):
     new_email = st.text_input("New Email")
     new_password = st.text_input("New Password", type="password")
     if st.button("Create Account"):
@@ -37,18 +33,16 @@ with st.expander("Create a new account"):
             if auth.create_user(new_email, new_password):
                 st.success("Account created successfully! Please log in.")
             else:
-                st.warning("This user already exists.")
+                st.warning("User already exists.")
         else:
-            st.warning("Please enter both an email and password.")
+            st.warning("Both fields are required.")
 
-# -----------------------
+# ----------------------------
 # PROTECTED CONTENT
-# -----------------------
+# ----------------------------
 if st.session_state.get("logged_in"):
     st.markdown("---")
-    st.subheader("✅ Protected Dashboard")
-    st.info("Only visible to logged-in users.")
-    # Place your main app/dashboard components here
-    st.write("You can now use the threat detection system.")
+    st.subheader("✅ Protected Area")
+    st.success("You are logged in and can now use the system.")
 else:
-    st.warning("Please log in to use the system.")
+    st.warning("Log in to access the system features.")
